@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 修正后的CDN链接 -->
+    <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/mdui/1.0.2/css/mdui.min.css"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css')  }}">
+    <title>用户注册 - NAS管理系统</title>
+</head>
+<body class="mdui-appbar-with-toolbar mdui-loaded">
+    <!-- 导航栏 -->
+    <header class="mdui-appbar mdui-appbar-fixed">
+        <div class="mdui-toolbar mdui-color-theme">
+            <span class="mdui-typo-title">NAS用户注册</span>
+        </div>
+    </header>
+ 
+    <!-- 主表单 -->
+    <div class="mdui-container mdui-m-t-5">
+        <form method="POST" action="{{ url_for('register') }}" class="mdui-card mdui-p-a-4">
+            <div class="mdui-textfield mdui-m-b-4">
+                <input class="mdui-textfield-input" 
+                       type="text" 
+                       name="username" 
+                       pattern="^[a-zA-Z0-9_]{4,20}$"
+                       required/>
+                <label class="mdui-textfield-label">用户名（4-20位字母数字）</label>
+            </div>
+ 
+            <div class="mdui-textfield mdui-m-b-4">
+                <input class="mdui-textfield-input"
+                       type="email"
+                       name="email"
+                       required 
+                       autocomplete="off"/>
+                <label class="mdui-textfield-label">电子邮箱</label>
+            </div>
+ 
+            <div class="mdui-textfield mdui-m-b-4">
+                <input class="mdui-textfield-input"
+                       type="password" 
+                       name="password"
+                       minlength="8"
+                       required/>
+                <label class="mdui-textfield-label">密码（至少8位）</label>
+            </div>
+ 
+            <button type="submit" 
+                    class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">
+                立即注册 
+            </button>
+        </form>
+    </div>
+ 
+    <!-- 消息提示组件 -->
+    <div id="toast" class="mdui-snackbar">
+        <div class="mdui-snackbar-text"></div>
+    </div>
+ 
+    <!-- 脚本区域 -->
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/mdui/1.0.2/js/mdui.min.js"></script> 
+    <script>
+        // 自动显示Flash消息 
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                new mdui.Snackbar({
+                    message: "{{ messages[0] | safe }}",
+                    position: 'right-top'
+                }).open();
+            {% endif %}
+        {% endwith %}
+    </script>
+</body>
+</html>

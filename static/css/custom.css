@@ -1,0 +1,44 @@
+/* 响应式布局 */
+@media (min-width: 600px) {
+    .main-container {
+        padding-top: 80px;
+        max-width: 480px !important;
+    }
+}
+
+/* 卡片样式增强 */
+.mdui-card {
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.login-header {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px 8px 0 0;
+}
+
+/* 表单间距优化 */
+.mdui-textfield {
+    margin: 24px 0;
+}
+
+/* 移动端优化 */
+@media (max-width: 600px) {
+    .mdui-container {
+        padding: 0 12px;
+    }
+}
+ 
+/* 卡片阴影优化 */
+.mdui-card {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+    border-radius: 8px;
+}
+ 
+/* 输入框聚焦效果 */
+.mdui-textfield-focus .mdui-textfield-label {
+    color: #2196F3 !important;
+}

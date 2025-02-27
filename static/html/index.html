@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="mdui-theme-primary-indigo mdui-theme-accent-pink">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 优化CDN加载顺序 -->
+    <link rel="stylesheet" 
+          href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/mdui/1.0.2/css/mdui.min.css"  
+          integrity="sha384-...">
+    <link rel="stylesheet" 
+          href="{{ url_for('static', filename='css/custom.css')  }}">
+    <title>NAS用户中心 - 智能管理平台</title>
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar">
+ 
+<!-- 全局导航栏 -->
+<header class="mdui-appbar mdui-appbar-fixed">
+    <div class="mdui-toolbar mdui-color-theme">
+        <a href="{{ url_for('dashboard') }}" 
+           class="mdui-typo-headline mdui-hidden-xs">NAS用户中心</a>
+        <div class="mdui-toolbar-spacer"></div>
+        
+        <!-- 动态用户状态 -->
+        {% if current_user.is_authenticated  %}
+        <div class="mdui-menu" id="user-menu">
+            <a href="javascript:void(0);" 
+               class="mdui-btn mdui-btn-icon"
+               mdui-menu="{target: '#user-menu', position: 'bottom'}">
+                <i class="mdui-icon material-icons">account_circle</i>
+            </a>
+            <ul class="mdui-menu">
+                <li class="mdui-menu-item">
+                    <a href="{{ url_for('dashboard') }}" class="mdui-ripple">
+                        <i class="mdui-icon material-icons">dashboard</i>控制台 
+                    </a>
+                </li>
+                <li class="mdui-divider"></li>
+                <li class="mdui-menu-item">
+                    <a href="{{ url_for('logout') }}" class="mdui-text-color-red">
+                        <i class="mdui-icon material-icons">exit_to_app</i>退出登录 
+                    </a>
+                </li>
+            </ul>
+        </div>
+        {% else %}
+        <a href="{{ url_for('login') }}" 
+           class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-white mdui-text-color-theme">
+            <i class="mdui-icon material-icons">login</i>登录 
+        </a>
+        {% endif %}
+    </div>
+</header>
+ 
+<!-- 主内容区 -->
+<main class="mdui-container">
+    <!-- 访客欢迎模块 -->
+    <div class="mdui-row mdui-m-t-5">
+        <div class="mdui-col-xs-12 mdui-text-center">
+            <h1 class="mdui-typo-display-2 mdui-text-color-theme">
+                {% if current_user.is_authenticated  %}
+                    欢迎回来，{{ current_user.id  }}
+                {% else %}
+                    NAS用户管理系统 
+                {% endif %}
+            </h1>
+            <p class="mdui-typo-subheading-opacity">
+                当前系统时间：{{ current_time }}
+            </p>
+        </div>
+    </div>
+ 
+    <!-- 功能卡片组 -->
+    <div class="mdui-row mdui-m-t-4">
+        <!-- 用户统计卡片 -->
+        <div class="mdui-col-md-4 mdui-m-b-2">
+            <div class="mdui-card mdui-hoverable">
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">用户总量</div>
+                    <div class="mdui-card-primary-subtitle">已注册用户数</div>
+                </div>
+                <div class="mdui-card-content mdui-typo-display-3 mdui-text-center">
+                    {{ system_status.user_count |number_format }}
+                </div>
+            </div>
+        </div>
+ 
+        <!-- 快速入口卡片 -->
+        <div class="mdui-col-md-8">
+            <div class="mdui-grid">
+                <a href="{{ url_for('register') }}" 
+                   class="mdui-col-xs-6 mdui-col-sm-4 mdui-btn mdui-ripple mdui-text-center">
+                    <i class="mdui-icon material-icons mdui-text-color-blue">person_add</i>
+                    <div class="mdui-m-t-1">新用户注册</div>
+                </a>
+                <!-- 更多入口... -->
+            </div>
+        </div>
+    </div>
+</main>
+ 
+<!-- 全局脚本 -->
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/mdui/1.0.2/js/mdui.min.js"></script> 
+<script>
+    // 自动初始化MDUI组件 
+    document.addEventListener('DOMContentLoaded',  function() {
+        
+        // 动态加载时间更新 
+        setInterval(() => {
+            document.querySelector('.system-time').textContent  = 
+                new Date().toLocaleString('zh-CN', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit'
+                });
+        }, 1000);
+    });
+
+    function refreshSystemStatus() {
+        fetch('/api/system_status')
+            .then(response => response.json()) 
+            .then(data => {
+                document.querySelector('.user-count').textContent  = 
+                    new Intl.NumberFormat().format(data.user_count); 
+                document.querySelector('.last-login').textContent  = 
+                    data.last_login; 
+            });
+    }
+    setInterval(refreshSystemStatus, 30000); // 30秒刷新 
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!-- 结构类似注册页，主要差异部分 -->
+<form method="POST" action="{{ url_for('login') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mdui-textfield mdui-m-b-4">
+        <input class="mdui-textfield-input" 
+               type="text" 
+               name="username"
+               required/>
+        <label class="mdui-textfield-label">用户名</label>
+    </div>
+ 
+    <div class="mdui-textfield mdui-m-b-4">
+        <input class="mdui-textfield-input"
+               type="password"
+               name="password"
+               required/>
+        <label class="mdui-textfield-label">密码</label>
+    </div>
+ 
+    <button type="submit" 
+            class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">
+        立即登录 
+    </button>
+</form>

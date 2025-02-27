@@ -1,0 +1,17 @@
+/* 修复MDUI原生问题 */
+.mdui-textfield-focus .mdui-textfield-label {
+    color: #2196F3 !important;
+}
+
+.mdui-snackbar {
+    bottom: 80px !important;
+    z-index: 2000;
+}
+
+/* 密码强度提示 */
+.password-strength {
+    margin-top: 8px;
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+}
