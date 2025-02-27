@@ -4,7 +4,8 @@ from config import Config
 from ldap_manager import LDAPManager 
 import ldap 
 from flask_wtf.csrf  import CSRFProtect 
- 
+from datetime import datetime
+
 # app.py  新增配置 
 app = Flask(__name__, 
            template_folder='static/html',  # 指定模板目录 

@@ -62,9 +62,6 @@ class LDAPManager:
                 ldap.SCOPE_SUBTREE,
                 search_filter,
                 ['loginTime'],
-                sort_key='loginTime',
-                reverse=True,
-                size_limit=1 
             )
             if results:
                 # 转换时间戳：假设存储为UTC时间戳 
