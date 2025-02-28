@@ -1,24 +1,131 @@
-<!-- 结构类似注册页，主要差异部分 -->
-<form method="POST" action="{{ url_for('login') }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <div class="mdui-textfield mdui-m-b-4">
-        <input class="mdui-textfield-input" 
-               type="text" 
-               name="username"
-               required/>
-        <label class="mdui-textfield-label">用户名</label>
-    </div>
- 
-    <div class="mdui-textfield mdui-m-b-4">
-        <input class="mdui-textfield-input"
-               type="password"
-               name="password"
-               required/>
-        <label class="mdui-textfield-label">密码</label>
-    </div>
- 
-    <button type="submit" 
-            class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">
-        立即登录 
-    </button>
-</form>
+<!DOCTYPE html>
+<html lang="zh-CN" class="mdui-theme-primary-indigo mdui-theme-accent-pink">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 优化CDN加载顺序 -->
+    <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/mdui/1.0.2/css/mdui.min.css"
+        integrity="sha384-...">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css')  }}">
+    <title>登录 - LDAP 统一认证平台</title>
+</head>
+
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar">
+
+    <!-- 全局导航栏 -->
+    <header class="mdui-appbar mdui-appbar-fixed">
+        <div class="mdui-toolbar mdui-color-theme">
+            <a href="{{ url_for('dashboard') }}" class="mdui-typo-headline mdui-hidden-xs">LDAP 统一认证平台</a>
+            <div class="mdui-toolbar-spacer"></div>
+
+            <!-- 动态用户状态 -->
+            {% if current_user.is_authenticated %}
+            <div class="mdui-menu" id="user-menu">
+                <a href="javascript:void(0);" class="mdui-btn mdui-btn-icon"
+                    mdui-menu="{target: '#user-menu', position: 'bottom'}">
+                    <i class="mdui-icon material-icons">account_circle</i>
+                </a>
+                <ul class="mdui-menu">
+                    <li class="mdui-menu-item">
+                        <a href="{{ url_for('dashboard') }}" class="mdui-ripple">
+                            <i class="mdui-icon material-icons">dashboard</i>控制台
+                        </a>
+                    </li>
+                    <li class="mdui-divider"></li>
+                    <li class="mdui-menu-item">
+                        <a href="{{ url_for('logout') }}" class="mdui-text-color-red">
+                            <i class="mdui-icon material-icons">exit_to_app</i>退出登录
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% else %}
+            <button onclick="window.location.href='{{ url_for('register') }}'"
+                class="mdui-btn mdui-btn-raised mdui-ripple mdui-text-center">
+                <i class="mdui-icon material-icons">person_add</i>新用户注册
+            </button>
+            <button onclick="window.location.href='{{ url_for('login') }}'"
+                class="mdui-btn mdui-btn-icon">
+                <i class="mdui-icon material-icons">home</i>
+            </button>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="mdui-container">
+        {# 已登录状态提示模块 #}
+        {% if current_user.is_authenticated  %}
+            <div class="mdui-row mdui-m-t-5">
+                <div class="mdui-col-xs-12 mdui-text-center">
+                    <div class="mdui-typo-display-1 mdui-text-color-green">
+                        <i class="mdui-icon material-icons">check_circle</i>
+                        您已登录 {{ current_user.id  }}
+                    </div>
+                    <p class="mdui-typo-subheading mdui-m-t-2">
+                        正在跳转到控制台...（<span id="countdown">3</span>秒后自动跳转）
+                    </p>
+                    <div class="mdui-spinner mdui-spinner-colorful"></div>
+                    <script>
+                        // 带倒计时效果的跳转 
+                        let seconds = 3;
+                        const countdownEl = document.getElementById('countdown'); 
+                        const timer = setInterval(() => {
+                            seconds--;
+                            countdownEl.textContent  = seconds;
+                            if(seconds <= 0) {
+                                clearInterval(timer);
+                                window.location.href  = "{{ url_for('dashboard') }}";
+                            }
+                        }, 1000);
+                    </script>
+                </div>
+            </div>
+        
+        {# 未登录状态显示表单 #}
+        {% else %}
+            <div class="mdui-card mdui-m-t-5" style="max-width: 480px; margin: 0 auto">
+                <div class="mdui-card-media">
+                    <div class="mdui-card-primary">
+                        <div class="mdui-card-primary-title">LDAP 统一认证</div>
+                        <div class="mdui-card-primary-subtitle">NAS用户中心智能平台</div>
+                    </div>
+                </div>
+                
+                <form method="POST" action="{{ url_for('login') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="mdui-textfield mdui-textfield-floating-label mdui-m-l-4 mdui-m-r-4 mdui-m-b-4">
+                        <i class="mdui-icon material-icons">person</i>
+                        <input class="mdui-textfield-input" 
+                               type="text" 
+                               name="username" 
+                               placeholder="用户名"
+                               pattern="[a-zA-Z0-9_@.]{5,20}" 
+                               required />
+                    </div>
+     
+                    <div class="mdui-textfield mdui-m-l-4 mdui-m-r-4 mdui-m-b-4">
+                        <i class="mdui-icon material-icons">lock</i>
+                        <input class="mdui-textfield-input" 
+                               type="password" 
+                               name="password"
+                               placeholder="密码"
+                               minlength="8"
+                               required />
+                    </div>
+     
+                    <div class="mdui-m-l-4 mdui-m-r-4 mdui-m-b-4">
+                        <button type="submit" 
+                            class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent">
+                            立即登录 
+                        </button>
+                        <div class="mdui-m-t-2 mdui-text-center">
+                            <a href="{{ url_for('register') }}" class="mdui-text-color-theme-text">
+                                没有账号？立即注册 
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    </main>
