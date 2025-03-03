@@ -95,6 +95,24 @@ class LDAPManager:
             current_app.logger.error(f" 用户创建失败: {str(e)}")
             raise RuntimeError("系统错误，请联系管理员")
  
+    def change_password(self, username, new_password):
+        """
+        修改用户密码
+        :param username: 用户名
+        :param new_password: 新密码
+        """
+        user_dn = f"uid={username},{current_app.config['LDAP_BASE_DN']}"
+        hashed_pw = self._generate_ssha(new_password)  # 使用现有的SSHA哈希方法生成密码
+
+        # 构造修改列表
+        mod_list = [(ldap.MOD_REPLACE, 'userPassword', [hashed_pw])]
+
+        try:
+            # 执行修改操作
+            self.conn.modify_s(user_dn, mod_list)
+        except ldap.LDAPError as e:
+            current_app.logger.error(f"密码修改失败: {str(e)}")
+            raise RuntimeError("系统错误，请稍后再试")
     def _generate_ssha(self, password):
         """生成LDAP兼容的SSHA密码哈希"""
         salt = os.urandom(4) 

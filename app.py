@@ -97,7 +97,7 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
  
-@app.route('/dashboard') 
+@app.route('/dashboard')
 @login_required 
 def dashboard():
     return render_template('dashboard.html')

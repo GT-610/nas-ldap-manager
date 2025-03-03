@@ -24,7 +24,7 @@
 
     <!-- 底部导航栏 -->
     <div class="mdui-bottom-nav">
-        <a href="javascript:;" class="mdui-ripple" id="user-profile-link">
+        <a href="javascript:;" class="mdui-ripple mdui-bottom-nav-active" id="user-profile-link">
             <i class="mdui-icon material-icons">account_circle</i>
             <label>用户概况</label>
         </a>
@@ -42,16 +42,6 @@
             const userProfileLink = document.getElementById('user-profile-link');
             const changePasswordLink = document.getElementById('change-password-link');
 
-            userProfileLink.addEventListener('click', function (event) {
-                event.preventDefault();
-                loadContent('user-profile');
-            });
-
-            changePasswordLink.addEventListener('click', function (event) {
-                event.preventDefault();
-                loadContent('change-password');
-            });
-
             function loadContent(contentType) {
                 fetch(`/api/${contentType}`)
                     .then(response => response.text())
@@ -62,6 +52,20 @@
                         console.error('加载内容失败:', error);
                     });
             }
+
+            userProfileLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                loadContent('user-profile');
+            });
+
+            changePasswordLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                loadContent('change-password');
+            });
+
+
+            // 页面加载时默认加载“用户概况”内容
+            loadContent('user-profile');
         });
     </script>
 </body>

@@ -1,14 +1,16 @@
-<!-- static/html/navbar.html -->
 <header class="mdui-appbar mdui-appbar-fixed">
     <div class="mdui-toolbar mdui-color-theme">
-        <a href="{{ url_for('dashboard') }}" class="mdui-typo-headline mdui-hidden-xs">LDAP 统一认证平台</a>
+        <a href="{{ url_for('index') }}" class="mdui-typo-headline mdui-hidden-xs">LDAP 统一认证平台</a>
         <div class="mdui-toolbar-spacer"></div>
         <!-- 动态用户状态 -->
         {% if current_user.is_authenticated %}
-        <button class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#user-menu'}">
+        <button class="mdui-btn mdui-btn-ripple" mdui-menu="{target: '#user-menu'}">
             <i class="mdui-icon material-icons">account_circle</i>
+            {{ current_user.id }}
         </button>
         <ul class="mdui-menu" id="user-menu">
+            <li class="mdui-menu-item">
+            </li>
             <li class="mdui-menu-item">
                 <a href="{{ url_for('dashboard') }}" class="mdui-ripple">
                     <i class="mdui-icon material-icons">dashboard</i>控制台
