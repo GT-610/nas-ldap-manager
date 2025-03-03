@@ -8,13 +8,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css')  }}">
     <title>注册 - LDAP 统一认证平台</title>
 </head>
-<body class="mdui-appbar-with-toolbar mdui-loaded">
+<body class="mdui-appbar-with-toolbar">
 
     <!-- 引入导航栏模块 -->
     {% include 'modules/navbar.html' %}
  
     <!-- 主表单 -->
-    <div class="mdui-container mdui-m-t-5">
+    <div class="mdui-container" style="width: 50%;">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">注册</div>
+        </div>
         <form method="POST" action="{{ url_for('register') }}" class="mdui-card mdui-p-a-4">
             <div class="mdui-textfield mdui-m-b-4">
                 <input class="mdui-textfield-input" 
@@ -50,21 +53,16 @@
         </form>
     </div>
  
-    <!-- 消息提示组件 -->
-    <div id="toast" class="mdui-snackbar">
-        <div class="mdui-snackbar-text"></div>
-    </div>
- 
     <!-- 脚本区域 -->
     <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/mdui/1.0.2/js/mdui.min.js"></script> 
     <script>
         // 自动显示Flash消息 
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                new mdui.Snackbar({
+                mdui.snackbar({
                     message: "{{ messages[0] | safe }}",
                     position: 'right-top'
-                }).open();
+                });
             {% endif %}
         {% endwith %}
     </script>

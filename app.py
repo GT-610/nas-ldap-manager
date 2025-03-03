@@ -143,13 +143,23 @@ def change_password():
     # GET 请求返回修改密码页面
     return render_template('sub-pages/change_password.html')
 
-@app.route('/api/system_status') 
+# app.py
+@app.route('/api/system_status')
 def system_status():
     """提供系统状态JSON数据"""
+    try:
+        # 尝试连接 LDAP 数据库
+        ldap_manager.conn  # 调用 LDAPManager 的 conn 属性会自动尝试连接
+        service_status = "服务正常"
+    except ldap.LDAPError as e:
+        app.logger.error(f"LDAP 连接失败: {str(e)}")
+        service_status = "服务不可用"
+
     return {
-        'user_count': ldap_manager.get_user_count(), 
-        'last_login': ldap_manager.get_last_login(), 
-        'current_time': datetime.now().strftime("%Y-%m-%d  %H:%M")
+        'user_count': ldap_manager.get_user_count(),
+        'last_login': ldap_manager.get_last_login(),
+        'current_time': datetime.now().strftime("%Y-%m-%d %H:%M"),
+        'service_status': service_status  # 新增字段：服务状态
     }
 
 if __name__ == '__main__':

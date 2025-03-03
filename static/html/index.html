@@ -11,7 +11,7 @@
     <title>LDAP 统一认证平台</title>
 </head>
 
-<body class="mdui-drawer-body-left mdui-appbar-with-toolbar">
+<body class="mdui-appbar-with-toolbar">
 
     <!-- 引入导航栏模块 -->
     {% include 'modules/navbar.html' %}
@@ -25,7 +25,7 @@
                     {% if current_user.is_authenticated %}
                     欢迎回来，{{ current_user.id }}
                     {% else %}
-                    NAS用户管理系统
+                    LDAP 统一认证系统
                     {% endif %}
                 </h1>
                 <p class="mdui-typo-subheading-opacity">
@@ -34,10 +34,10 @@
             </div>
         </div>
 
-        <!-- 功能卡片组 -->
+        <!-- 卡片分两列 -->
         <div class="mdui-row mdui-m-t-4">
-            <!-- 用户统计卡片 -->
-            <div class="mdui-col-md-4 mdui-m-b-2">
+            <!-- 左边：用户统计卡片 -->
+            <div class="mdui-col-md-6 mdui-m-b-2">
                 <div class="mdui-card mdui-hoverable">
                     <div class="mdui-card-primary">
                         <div class="mdui-card-primary-title">用户总量</div>
@@ -49,11 +49,16 @@
                 </div>
             </div>
 
-            <!-- 快速入口卡片 -->
-            <div class="mdui-col-md-8">
-                <div class="mdui-grid">
-
-                    <!-- 更多入口... -->
+            <!-- 右边：服务状态卡片 -->
+            <div class="mdui-col-md-6 mdui-m-b-2">
+                <div class="mdui-card mdui-hoverable">
+                    <div class="mdui-card-primary">
+                        <div class="mdui-card-primary-title">服务状态</div>
+                        <div class="mdui-card-primary-subtitle">系统运行情况</div>
+                    </div>
+                    <div class="mdui-card-content mdui-typo-display-3 mdui-text-center service-status">
+                        <!-- 服务状态 -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,13 +87,28 @@
             fetch('/api/system_status')
                 .then(response => response.json())
                 .then(data => {
+                    // 更新用户统计
                     document.querySelector('.user-count').textContent =
                         new Intl.NumberFormat().format(data.user_count);
+                    // 更新最近登录时间
                     document.querySelector('.last-login').textContent =
                         data.last_login;
+                    // 更新服务状态
+                    const serviceStatusElement = document.querySelector('.service-status');
+                    if (serviceStatusElement) {
+                        serviceStatusElement.textContent = data.service_status;
+                    }
+                })
+                .catch(error => {
+                    console.error('加载系统状态失败:', error);
+                    // 如果请求失败，显示“服务不可用”
+                    const serviceStatusElement = document.querySelector('.service-status');
+                    if (serviceStatusElement) {
+                        serviceStatusElement.textContent = '服务不可用';
+                    }
                 });
         }
-        setInterval(refreshSystemStatus, 30000); // 30秒刷新 
+        setInterval(refreshSystemStatus, 30000); // 每30秒刷新一次
     </script>
 </body>
 
