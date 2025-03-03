@@ -6,15 +6,12 @@
     <!-- 修正后的CDN链接 -->
     <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/mdui/1.0.2/css/mdui.min.css"> 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css')  }}">
-    <title>用户注册 - NAS管理系统</title>
+    <title>注册 - LDAP 统一认证平台</title>
 </head>
 <body class="mdui-appbar-with-toolbar mdui-loaded">
-    <!-- 导航栏 -->
-    <header class="mdui-appbar mdui-appbar-fixed">
-        <div class="mdui-toolbar mdui-color-theme">
-            <span class="mdui-typo-title">NAS用户注册</span>
-        </div>
-    </header>
+
+    <!-- 引入导航栏模块 -->
+    {% include 'navbar.html' %}
  
     <!-- 主表单 -->
     <div class="mdui-container mdui-m-t-5">

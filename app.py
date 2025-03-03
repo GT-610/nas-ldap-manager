@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, url_for, flash, render_template 
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user 
+from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user 
 from config import Config 
 from ldap_manager import LDAPManager 
 import ldap 
@@ -100,8 +100,49 @@ def logout():
 @app.route('/dashboard') 
 @login_required 
 def dashboard():
-    return "用户仪表板（待实现）"
- 
+    return render_template('dashboard.html')
+
+# app.py
+@app.route('/api/user-profile')
+def user_profile():
+    # 返回用户概况的内容
+    return render_template('sub-pages/user_profile.html', 
+        username=current_user.id
+    )
+
+# app.py
+@app.route('/api/change-password', methods=['GET', 'POST'])
+@login_required  # 确保用户已登录
+def change_password():
+    if request.method == 'POST':
+        old_password = request.form.get('old_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+
+        # 验证输入
+        if not all([old_password, new_password, confirm_password]):
+            return {'success': False, 'message': '请填写所有字段'}
+
+        if new_password != confirm_password:
+            return {'success': False, 'message': '两次输入的新密码不一致'}
+
+        try:
+            # 验证原密码是否正确
+            user_dn = f"uid={current_user.id},{app.config['LDAP_BASE_DN']}"
+            temp_conn = ldap.initialize(app.config['LDAP_URI'])
+            temp_conn.simple_bind_s(user_dn, old_password)
+
+            # 更新密码
+            ldap_manager.change_password(current_user.id, new_password)
+            return {'success': True, 'message': '密码修改成功'}
+        except ldap.INVALID_CREDENTIALS:
+            return {'success': False, 'message': '原密码错误'}
+        except Exception as e:
+            return {'success': False, 'message': f'系统错误: {str(e)}'}
+
+    # GET 请求返回修改密码页面
+    return render_template('sub-pages/change_password.html')
+
 @app.route('/api/system_status') 
 def system_status():
     """提供系统状态JSON数据"""

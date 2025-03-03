@@ -13,45 +13,8 @@
 
 <body class="mdui-drawer-body-left mdui-appbar-with-toolbar">
 
-    <!-- 全局导航栏 -->
-    <header class="mdui-appbar mdui-appbar-fixed">
-        <div class="mdui-toolbar mdui-color-theme">
-            <a href="{{ url_for('dashboard') }}" class="mdui-typo-headline mdui-hidden-xs">LDAP 统一认证平台</a>
-            <div class="mdui-toolbar-spacer"></div>
-
-            <!-- 动态用户状态 -->
-            {% if current_user.is_authenticated %}
-            <div class="mdui-menu" id="user-menu">
-                <a href="javascript:void(0);" class="mdui-btn mdui-btn-icon"
-                    mdui-menu="{target: '#user-menu', position: 'bottom'}">
-                    <i class="mdui-icon material-icons">account_circle</i>
-                </a>
-                <ul class="mdui-menu">
-                    <li class="mdui-menu-item">
-                        <a href="{{ url_for('dashboard') }}" class="mdui-ripple">
-                            <i class="mdui-icon material-icons">dashboard</i>控制台
-                        </a>
-                    </li>
-                    <li class="mdui-divider"></li>
-                    <li class="mdui-menu-item">
-                        <a href="{{ url_for('logout') }}" class="mdui-text-color-red">
-                            <i class="mdui-icon material-icons">exit_to_app</i>退出登录
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            {% else %}
-            <button onclick="window.location.href='{{ url_for('register') }}'"
-                class="mdui-btn mdui-btn-raised mdui-ripple mdui-text-center">
-                <i class="mdui-icon material-icons">person_add</i>新用户注册
-            </button>
-            <button onclick="window.location.href='{{ url_for('login') }}'"
-                class="mdui-btn mdui-btn-icon">
-                <i class="mdui-icon material-icons">home</i>
-            </button>
-            {% endif %}
-        </div>
-    </header>
+    <!-- 引入导航栏模块 -->
+    {% include 'navbar.html' %}
 
     <main class="mdui-container">
         {# 已登录状态提示模块 #}
